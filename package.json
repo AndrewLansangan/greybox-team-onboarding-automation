@@ -14,9 +14,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/AndrewLansangan/greybox-team-onboarding-automation/issues"
   },
-  "homepage": "https://github.com/AndrewLansangan/greybox-team-onboarding-automation#readme"
+  "homepage": "https://github.com/AndrewLansangan/greybox-team-onboarding-automation#readme",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "googleapis": "^146.0.0"
+  }
 }
