@@ -1,0 +1,90 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - google-workspace
+      - slack-api
+      - notion-api
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-branch-permissions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check User Permissions
+        run: |
+          BRANCH=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
+          AUTHOR=$(git log -1 --pretty=format:'%an')
+
+          case "$BRANCH" in
+            google-workspace) ALLOWED_USERS=(dev1 dev2) ;;
+            slack-api) ALLOWED_USERS=(dev3 dev4) ;;
+            notion-api) ALLOWED_USERS=(dev5 dev6) ;;
+            main) ALLOWED_USERS=(lead-dev) ;;
+            *) echo "Unknown branch: $BRANCH" && exit 1 ;;
+          esac
+
+          if [[ ! " ${ALLOWED_USERS[@]} " =~ " ${AUTHOR} " ]]; then
+            echo "❌ ERROR: $AUTHOR is not authorized to push to $BRANCH!"
+            exit 1
+          fi
+
+  setup-node:
+    needs: check-branch-permissions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+  test:
+    needs: setup-node
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [google-workspace, slack-api, notion-api]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run Tests
+        run: |
+          cd ${{ matrix.project }}
+          npm test
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [google-workspace, slack-api, notion-api]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Build Project
+        run: |
+          cd ${{ matrix.project }}
+          npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy Project
+        run: |
+          echo "Deploying to Production..."
+          # Add your deployment script here (e.g., Firebase, AWS, Heroku)
