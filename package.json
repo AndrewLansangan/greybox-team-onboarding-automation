@@ -1,0 +1,21 @@
+{
+  "name": "greybox-team-onboarding-automation",
+  "version": "1.0.0",
+  "description": "This system helps administrators **manage and track platform/tool access** for different contributor types in a centralized way using Notion.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndrewLansangan/greybox-team-onboarding-automation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AndrewLansangan/greybox-team-onboarding-automation/issues"
+  },
+  "homepage": "https://github.com/AndrewLansangan/greybox-team-onboarding-automation#readme"
+}
